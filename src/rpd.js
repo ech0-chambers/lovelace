@@ -1,0 +1,156 @@
+const colours = {
+foreground: {
+  base: '#575279',
+  1: '#635D8A',
+  2: '#7872A0',
+  3: '#A19DBC',
+  4: '#C9C7D9',
+  5: '#E2E0EA',
+},
+background: {
+  base: '#FAF4ED',
+  1: '#6E491F',
+  2: '#9B672B',
+  3: '#D09856',
+  4: '#E5C6A2',
+  5: '#F2E2CF',
+},
+accent1: {
+  base: '#B4637A',
+  1: '#813E51',
+  2: '#9F4C64',
+  3: '#CF9BAA',
+  4: '#DDB7C2',
+  5: '#EAD3DA',
+},
+accent2: {
+  base: '#EA9D34',
+  1: '#B06D12',
+  2: '#D98717',
+  3: '#EABE84',
+  4: '#EECFA9',
+  5: '#F3E1CC',
+},
+accent3: {
+  base: '#D7827E',
+  1: '#A93A34',
+  2: '#C95650',
+  3: '#E6B8AA',
+  4: '#EDCFC0',
+  5: '#F3E3D6',
+},
+accent4: {
+  base: '#286983',
+  1: '#205469',
+  2: '#245E76',
+  3: '#5CADCD',
+  4: '#8DC5DC',
+  5: '#BDDEEB',
+},
+accent5: {
+  base: '#56949F',
+  1: '#3D6971',
+  2: '#497E88',
+  3: '#92BCC4',
+  4: '#B1D0D5',
+  5: '#D1E3E6',
+},
+accent6: {
+  base: '#907AA9',
+  1: '#716295',
+  2: '#816DA0',
+  3: '#B8AAC8',
+  4: '#CCC1D7',
+  5: '#DFD9E7',
+},
+accent7: {
+  base: '#54668C',
+  1: '#535882',
+  2: '#545E87',
+  3: '#8E9DBB',
+  4: '#AFB9CF',
+  5: '#D0D6E3',
+},
+surface1: {
+  base: '#797593',
+  1: '#676287',
+  2: '#706B8E',
+  3: '#AAA7BA',
+  4: '#C2C0CE',
+  5: '#DAD9E1',
+},
+surface2: {
+  base: '#9893A5',
+  1: '#766F93',
+  2: '#88819B',
+  3: '#BCB9C5',
+  4: '#CFCCD5',
+  5: '#E1DFE5',
+},
+surface3: {
+  base: '#CECACD',
+  1: '#847A82',
+  2: '#A9A2A8',
+  3: '#DDDADC',
+  4: '#E5E3E4',
+  5: '#ECEBEC',
+},
+surface4: {
+  base: '#DFDAD9',
+  1: '#92817D',
+  2: '#B8ADAB',
+  3: '#EDE3DE',
+  4: '#F2E8E2',
+  5: '#F6EEE7',
+},
+surface5: {
+  base: '#F2E9E1',
+  1: '#61442A',
+  2: '#875E3A',
+  3: '#BB8C62',
+  4: '#D6BAA1',
+  5: '#E7D6C8',
+},
+surface6: {
+  base: '#F4EDE8',
+  1: '#5E422D',
+  2: '#845C3F',
+  3: '#B88A69',
+  4: '#D6BCA9',
+  5: '#E8D9CF',
+},
+surface7: {
+  base: '#FFFAF3',
+  1: '#8E5300',
+  2: '#C97500',
+  3: '#FFA72D',
+  4: '#FFD190',
+  5: '#FFE9CB',
+},
+};
+colours.accents = {
+  1: colours.accent1,
+  2: colours.accent2,
+  3: colours.accent3,
+  4: colours.accent4,
+  5: colours.accent5,
+  6: colours.accent6,
+  7: colours.accent7,
+};
+colours.surfaces = {
+  1: colours.surface1,
+  2: colours.surface2,
+  3: colours.surface3,
+  4: colours.surface4,
+  5: colours.surface5,
+  6: colours.surface6,
+  7: colours.surface7,
+};
+colours.red = colours.accent1;
+colours.orange = colours.accent2;
+colours.yellow = colours.accent2;
+colours.green = colours.accent5;
+colours.cyan = colours.accent5;
+colours.blue = colours.accent7;
+colours.purple = colours.accent7;
+colours.magenta = colours.accent6;

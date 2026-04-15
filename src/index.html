@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LoveLace</title>
+    <script src="nord.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300..700&family=Fira+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="nord.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="main">
+        <h1 style="grid-column: 1 / span 2;">LoveLace</h1>
+        <div id="input-area">
+            <!-- <h2>Input</h2> -->
+            <!-- <textarea name="pattern" id="pattern" contenteditable="true"></textarea> -->
+            <div id="pattern-container"></div>
+            <div class="separate">
+                <div id="is-chart-container">
+                    <input type="checkbox" name="is-chart" id="is-chart-checkbox" checked="false">
+                    <label for="is-chart-checkbox">Chart input</label>
+                </div>
+                <button id="render">
+                    <span class="material-symbols-outlined">arrow_circle_right</span>
+                    Process
+                </button>
+            </div>
+            <div id="error-container">
+
+            </div>
+            <div class="details" id="input-details">
+                <div id="input-details-instructions">
+                    <h3>Information</h3>
+                    <p>This app can convert instructions for hand-knitted lace into a chart, punchcard, or image file
+                        for
+                        AYAB. Since this is intended for use with a knitting machine, all rows must have the same number
+                        of
+                        stitches, and purl stitches are not recognised. To load an example (taken from <i>A Second
+                            Treasury
+                            of Knitting Patterns</i>) click here: <button class="example-button" id="full-example"
+                            onclick="load_sample_full()">Load example</button> </p>
+                    <p>The input is quite flexible, but design specifically with the syntax used in <i>A Second Treasury
+                            of
+                            Knitting Patterns</i> in mind. Full words (e.g. <span class="instruction">yarn over</span>) and abbreviations (<span class="instruction">yo</span>) are
+                        accepted. Below is a list of acceptable instructions.</p>
+                    <ul>
+                        <li>Increases:
+                            <ul>
+                                <li>Yarn Over, <span class="instruction">yo</span></li>
+                            </ul>
+                        </li>
+                        <li>Decreases:
+                            <ul>
+                                <li>Slip-slip-knit, <span class="instruction">ssk</span></li>
+                                <li>Knit 2 together, <span class="instruction">k2 tog</span></li>
+                            </ul>
+                        </li>
+                        <li>Double Decreases:
+                            <ul>
+                                <li>Slip 1 - knit 2 together - pass slipped stich over, <span class="instruction">sl 1 -
+                                        k2 tog - psso</span></li>
+                                <li>Slip 2 - knit 1 - pass two slipped stitches over, <span class="instruction">sl 2 -
+                                        k1 - p2sso</span></li>
+                                <li>Knit 3 together, <span class="instruction">k3 tog</span></li>
+                            </ul>
+                        </li>
+                        <li>Others:
+                            <ul>
+                                <li>Knit stitches, <span class="instruction">k[number]</span>, for example <span
+                                        class="instruction">knit 6</span> or <span class="instruction">k6</span></li>
+                                <li>To repeat a set of instructions, use <span class="instruction">( ... ) twice</span>,
+                                    or
+                                    <span class="instruction">( ... ) four times</span> etc
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div id="input-details-chart" hidden>
+                    <h3>Information</h3>
+                    <p>This app can convert instructions for hand-knitted lace into a chart, punchcard, or image file for AYAB. Since this is intended for use with a knitting machine, all rows must have the same number of stitches, and purl stitches are not recognised. To load an example (taken from <i>A Second Treasury of Knitting Patterns</i>) click here: <button class="example-button" id="chart-example" onclick="load_sample_chart()">Load example</button> </p>
+                    <p>The input accepts the following symbols:
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Symbol</th>
+                                    <th>Meaning</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><span class="instruction">&nbsp;</span> (space), <span class="instruction">.</span>, <span class="instruction">-</span></td>
+                                <td>Knit</td>
+                            </tr>
+                            <tr>
+                                <td><span class="instruction">/</span></td>
+                                <td>Knit 2 together (right-leaning decrease)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="instruction">\</span></td>
+                                <td>Slip slip knit (left-leaning decrease)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="instruction">^</span>, <span class="instruction">x</span>, <span class="instruction">X</span></td>
+                                <td>Slip 2, knit 1, pass slipped stitches over (central double decrease)</td>
+                            </tr>
+                            <tr>
+                                <td><span class="instruction">o</span>, <span class="instruction">O</span>, <span class="instruction">0</span></td>
+                                <td>Yarn over (increase)</td>
+                            </tr>
+                            </tbody>
+                            </table>
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div id="output-area">
+            <!-- <h2>Output</h2> -->
+            <div class="tabs-container">
+                <ul class="tabs-titles">
+                    <li><a href="#chart" id="tab-1" class="tabs-link">Chart (Image)</a></li>
+                    <li><a href="#chart-text" id="tab-2" class="tabs-link">Chart (Text)</a></li>
+                    <li><a href="#ayab" id="tab-3" class="tabs-link">AYAB</a></li>
+                    <li><a href="#punchcard" id="tab-4" class="tabs-link">Punchcard</a></li>
+                </ul>
+                <div class="tabs__panels">
+                    <div id="chart" aria-labelledby="tab-1">
+                        <button id="download-chart" class="download-button" onclick="download_chart()">
+                            <span class="material-symbols-outlined">download</span>
+                            Download
+                        </button>
+                        <span class="filename-input" contenteditable="true" id="chart_filename">pattern_name</span><span
+                            class="filename-suffix">_chart.svg</span>
+                        <div id="svg-container"></div>
+                    </div>
+                    <div id="chart-text" aria-labelledby="tab-2">
+                        <button id="download-chart-text" class="download-button" onclick="download_chart_text()">
+                            <span class="material-symbols-outlined">download</span>
+                            Download
+                        </button>
+                        <span class="filename-input" contenteditable="true"
+                            id="chart_text_filename">pattern_name</span><span class="filename-suffix">_chart.txt</span>
+                        <div class="side-by-side">
+                            <div id="chart-text-container">
+                                <button id="copy-chart-text" class="copy-button" onclick="copy_chart_text()">
+                                    <span class="material-symbols-outlined">copy_all</span>
+                                </button>
+                                <pre id="chart-text-pre"></pre>
+                            </div>
+                            <div class="details">
+                                <h3>Information</h3>
+                                <p>This version of the chart is a convenient way to store your lace patterns, and can be
+                                    used as the input to this app. However, it does lose a little information; namely,
+                                    all double decreases ("^") are interpreted as a sl 2 - k1 - p2sso, since this is the
+                                    most reliable double decrease on a knitting machine. If you need a specific double
+                                    decrease, use the instruction input instead.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="ayab" aria-labelledby="tab-3">
+                        <button id="download-ayab" class="download-button" onclick="download_ayab()">
+                            <span class="material-symbols-outlined">download</span>
+                            Download
+                        </button>
+                        <span class="filename-input" contenteditable="true" id="ayab_filename">pattern_name</span><span
+                            class="filename-suffix">_ayab.png</span>
+                        <div id="ayab-container">
+                            <div class="canvas">
+                                <canvas id="ayab-canvas"></canvas>
+                            </div>
+                            <div class="details">
+                                <h3>Information</h3>
+                                <p>This output is intended for use with <a target="_blank"
+                                        href="https://www.ayab-knitting.com/">AYAB</a> or similar programs. You should
+                                    knit with the main carriage after the lace carriage selects no needles on a
+                                    left-to-right pass and on a right-to-left pass.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="punchcard" aria-labelledby="tab-4">
+                        <button id="download-punchcard" class="download-button" onclick="download_punchcard()">
+                            <span class="material-symbols-outlined">download</span>
+                            Download
+                        </button>
+                        <span class="filename-input" contenteditable="true"
+                            id="punchcard_filename">pattern_name</span><span
+                            class="filename-suffix">_punchcard.txt</span>
+                        <div class="side-by-side">
+                            <div id="punchcard-container">
+                                <button id="copy-chart-text" class="copy-button" onclick="copy_punchcard()">
+                                    <span class="material-symbols-outlined">copy_all</span>
+                                </button>
+                                <pre id="punchcard-pre"></pre>
+                            </div>
+                            <div class="details">
+                                <h3>Information</h3>
+                                <p>This output is intended for use with Brenda Bell's <a target="_blank" target="_blank"
+                                        href="https://brendaabell.com/knittingtools/pcgenerator/">Punchcard
+                                        Generator</a>. You should knit with the main carriage after the lace carriage
+                                    selects no needles on a left-to-right pass and on a right-to-left pass.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="editor.bundle.js"></script>
+    <script src="tabs.js"></script>
+    <script src="lovelace.js"></script>
+    <script src="process.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+</body>
+
+</html>
