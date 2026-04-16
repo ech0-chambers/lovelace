@@ -386,7 +386,6 @@ class Row {
     }
 
 
-    // TODO: Make use of js objects instead of arrays to make testing easier/more readable (i.e, {type: YarnOver, idx: 3})
     to_transfers() {
         // transfers *need* to be reset
         // if (this._transfers != null) {
@@ -395,56 +394,85 @@ class Row {
         this._transfers = [];
         let stack = [];
 
+        /* {
+                type: "increase",
+                instruction: TokenType.YarnOver,
+                idx: 4
+            }
+            {
+                type: "double_decrease",
+                instruction: TokenType.Sl1K2TogPSSO,
+                idx: 5
+                ?left_idx: 2  <-- only present if we've already found an increase
+            }
+        */
+
         for (let idx = 0; idx < this.expanded.length; idx++) {
             let inst = this.expanded[idx];
             if (_INCREASES.includes(inst)) {
-                if (stack.length > 0 && _DECREASES.includes(stack[stack.length - 1][0])) {
+                if (stack.length > 0 && stack[stack.length - 1].type == "decrease") {
                     // We've closed a transfer
                     let inc = stack.pop();
                     this._transfers.push(new Transfer(
                         idx,
-                        inc[1],
-                        _LEFT_DECREASES.includes(inc[0])
+                        inc.idx,
+                        _LEFT_DECREASES.includes(inc.instruction)
                     ));
                     continue;
                 }
                 // We might be closing a double decrease
                 if (
                     stack.length > 0
-                    && _DOUBLE_DECREASES.includes(stack[stack.length - 1][0])
-                    && stack[stack.length - 1].length == 4 // if it's length 4, then it already has the left increase
+                    && stack[stack.length - 1].type == "double_decrease"
+                    && stack[stack.length - 1].left_idx != undefined
                 ) {
                     let inc = stack.pop();
                     this._transfers.push(new DoubleTransfer(
-                        inc[3],
+                        inc.left_idx,
+                        inc.idx,
                         idx,
-                        inc[1],
-                        inc[0]
+                        inc.instruction
                     ));
                     continue;
                 }
-                stack.push([inst, idx]);
+                stack.push({
+                    type: "increase",
+                    instruction: inst,
+                    idx: idx
+                });
                 continue;
             } else if (_DECREASES.includes(inst)) {
-                if (stack.length > 0 && _INCREASES.includes(stack[stack.length - 1][0])) {
+                if (stack.length > 0 && stack[stack.length - 1].type == "increase") {
                     let dec = stack.pop();
                     this._transfers.push(new Transfer(
-                        dec[1],
+                        dec.idx,
                         idx,
                         _RIGHT_DECREASES.includes(inst)
                     ));
                     continue;
                 }
-                stack.push([inst, idx]);
+                stack.push({
+                    type: "decrease",
+                    instruction: inst,
+                    idx: idx
+                });
             } else if (_DOUBLE_DECREASES.includes(inst)) {
-                if (_DOUBLE_DECREASES.includes(inst)) {
-                    if (stack.length > 0 && _INCREASES.includes(stack[stack.length - 1][0])) {
-                        let dec = stack.pop();
-                        stack.push([inst, idx, dec[0], dec[1]]);
-                        continue;
-                    }
-                    stack.push([inst, idx]);
+                if (stack.length > 0 && stack[stack.length - 1].type == "increase") {
+                    let dec = stack.pop();
+                    stack.push({
+                        type: "double_decrease",
+                        instruction: inst,
+                        idx: idx,
+                        left_idx: dec.idx
+                    });
+                    continue;
                 }
+                stack.push({
+                    type: "double_decrease",
+                    instruction: inst,
+                    idx: idx
+                    // no left_idx yet
+                });
             }
         }
         if (stack.length > 0) {
@@ -453,28 +481,28 @@ class Row {
             //   2) we started or ended with a double decrease, with the corresponding increase on the other end
             if (
                 stack.length == 3
-                && _DOUBLE_DECREASES.includes(stack[0][0])
-                && _INCREASES.includes(stack[1][0])
-                && _INCREASES.includes(stack[2][0])
+                && stack[0].type == "double_decrease"
+                && stack[1].type == "increase"
+                && stack[2].type == "increase"
             ) {
                 // We have (^, o, o)
                 this._transfers.append(new DoubleTransfer(
-                    stack[2][1] - this.stitch_count,
-                    stack[1][1],
-                    stack[0][1],
-                    stack[0][0]
+                    stack[2].idx - this.stitch_count,
+                    stack[1].idx,
+                    stack[0].idx,
+                    stack[0].instruction
                 ));
             } else if (
                 stack.length == 2
-                && stack[1].length == 4
-                && _INCREASES.includes(stack[0][0])
+                && stack[1].left_idx != undefined
+                && stack[0].type == "increase"
             ) {
                 // We have (o, o, ^), which is in the stack as [o, [^, o]]
                 this._transfers.push(new DoubleTransfer(
-                    stack[1][3],
-                    this.stitch_count + stack[0][1],
-                    stack[1][1],
-                    stack[1][0]
+                    stack[1].left_idx,
+                    this.stitch_count + stack[0].idx,
+                    stack[1].idx,
+                    stack[1].instruction
                 ));
             } else {
                 // Reached the end of the row with mismatched increases/decreases.`)
