@@ -486,7 +486,7 @@ class Row {
                 && stack[2].type == "increase"
             ) {
                 // We have (^, o, o)
-                this._transfers.append(new DoubleTransfer(
+                this._transfers.push(new DoubleTransfer(
                     stack[2].idx - this.stitch_count,
                     stack[1].idx,
                     stack[0].idx,
